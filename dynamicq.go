@@ -9,9 +9,9 @@ type Dynamic struct {
 	args   []interface{}
 }
 
-func (d *Dynamic) Add(param string, v ...interface{}) {
-	d.params = append(d.params, param)
-	d.args = append(d.args, v...)
+func (d *Dynamic) Where(param string, v ...interface{}) {
+	d.AddParam(param)
+	d.AddArg(v...)
 }
 
 func (d *Dynamic) AddParam(param string) {
