@@ -12,15 +12,15 @@ func TestDynamic(t *testing.T) {
 		query = "SELECT * FROM user"
 	)
 
-	dq.Add("invited = ?", true)
+	dq.Where("invited = ?", true)
 	dq.Glue(&query)
-	dq.Attr(&query, "SORT BY id")
+	dq.Attr(&query, "ORDER BY id")
 	dq.Limit(&query, 10)
 	dq.Offset(&query, 10)
 
 	args := dq.Args()
 
-	require.Equal(t, "SELECT * FROM user WHERE invited = ? SORT BY id LIMIT ? OFFSET ?", query)
+	require.Equal(t, "SELECT * FROM user WHERE invited = ? ORDER BY id LIMIT ? OFFSET ?", query)
 	require.Equal(t, true, args[0])
 	require.Equal(t, int64(10), args[1])
 	require.Equal(t, int64(10), args[2])
@@ -40,22 +40,22 @@ func TestDynamic_Glue(t *testing.T) {
 		{
 			query: "SELECT id FROM user",
 			handler: func(dq *Dynamic) {
-				dq.Add("role = ?", "admin")
+				dq.Where("role = ?", "admin")
 			},
 			expectedQuery: "SELECT id FROM user WHERE role = ?",
 		},
 		{
 			query: "SELECT id FROM user",
 			handler: func(dq *Dynamic) {
-				dq.Add("role = ?", "admin")
-				dq.Add("age = ?", 18)
+				dq.Where("role = ?", "admin")
+				dq.Where("age = ?", 18)
 			},
 			expectedQuery: "SELECT id FROM user WHERE role = ? AND age = ?",
 		},
 		{
 			query: "SELECT id FROM user",
 			handler: func(dq *Dynamic) {
-				dq.Add("role = ? OR invited = ?", "admin", true)
+				dq.Where("role = ? OR invited = ?", "admin", true)
 			},
 			expectedQuery: "SELECT id FROM user WHERE role = ? OR invited = ?",
 		},
