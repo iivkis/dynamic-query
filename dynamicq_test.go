@@ -70,3 +70,57 @@ func TestDynamic_Glue(t *testing.T) {
 		require.Equal(t, item.query, item.expectedQuery)
 	}
 }
+
+func TestDynamic_Limit(t *testing.T) {
+	table := []struct {
+		query         string
+		limit         int64
+		expectedQuery string
+	}{
+		{
+			query:         "SELECT id FROM user",
+			limit:         0,
+			expectedQuery: "SELECT id FROM user",
+		},
+		{
+			query:         "SELECT id FROM user",
+			limit:         15,
+			expectedQuery: "SELECT id FROM user LIMIT ?",
+		},
+	}
+
+	for _, item := range table {
+		var dq Dynamic
+
+		dq.Limit(&item.query, item.limit)
+
+		require.Equal(t, item.query, item.expectedQuery)
+	}
+}
+
+func TestDynamic_Offset(t *testing.T) {
+	table := []struct {
+		query         string
+		offset        int64
+		expectedQuery string
+	}{
+		{
+			query:         "SELECT id FROM user",
+			offset:        0,
+			expectedQuery: "SELECT id FROM user",
+		},
+		{
+			query:         "SELECT id FROM user",
+			offset:        15,
+			expectedQuery: "SELECT id FROM user OFFSET ?",
+		},
+	}
+
+	for _, item := range table {
+		var dq Dynamic
+
+		dq.Offset(&item.query, item.offset)
+
+		require.Equal(t, item.query, item.expectedQuery)
+	}
+}
